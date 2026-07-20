@@ -39,7 +39,7 @@ jobs:
         with:
           branch: feature/issue-${{ inputs.issue_number }}-implementation
           delete-branch: true
-          draft: true
+          draft: false
           title: 'feat: implement #${{ inputs.issue_number }}'
           commit-message: 'feat: implement #${{ inputs.issue_number }}'
           body: |
