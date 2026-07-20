@@ -23,19 +23,17 @@ jobs:
           fetch-depth: 0
       - name: Capture pull request context as data
         run: gh pr view "$PR_NUMBER" --json number,title,body,files,commits,url > pull-request.json
-      - name: Configure DeepSeek provider
+      - name: Configure New API provider
         env:
           CODEX_HOME: ${{ runner.temp }}/codex-home
         run: |
           mkdir -p "$CODEX_HOME"
-          cp .github/codex/deepseek-config.toml "$CODEX_HOME/config.toml"
-      - name: Start DeepSeek Responses adapter
-        uses: ./.github/actions/start-deepseek-responses-adapter
-        with:
-          deepseek-api-key: ${{ secrets.DEEPSEEK_API_KEY }}
+          cp .github/codex/newapi-config.toml "$CODEX_HOME/config.toml"
       - name: Review the pull request
         id: codex
         uses: openai/codex-action@v1
+        env:
+          NEWAPI_API_KEY: ${{ secrets.NEWAPI_API_KEY }}
         with:
           codex-home: ${{ runner.temp }}/codex-home
           prompt-file: .github/codex/prompts/reviewer.md

@@ -1,9 +1,0 @@
-# This file is copied into the GitHub runner's CODEX_HOME before Codex starts.
-# LiteLLM translates Codex's Responses API calls to DeepSeek's Chat API locally.
-model = "deepseek-codex"
-model_provider = "litellm"
-
-[model_providers.litellm]
-name = "Local LiteLLM Responses adapter"
-base_url = "http://127.0.0.1:4000/v1"
-wire_api = "responses"
