@@ -84,6 +84,20 @@ missing provider credential blocks merge rather than bypassing review.
    Codex step, and retain validation tests. Do not weaken the existing Codex
    review gate to accommodate a provider.
 
+## Local validation
+
+Validate the checked-in workflow contract before opening a change with:
+
+```powershell
+pwsh -NoProfile -File tests/Test-AiWorkflow.ps1
+```
+
+On success, the validator prints:
+
+```text
+AI delivery-loop contract passed.
+```
+
 ## Roadmap
 
 - [x] Add repository guidance and contribution conventions.
