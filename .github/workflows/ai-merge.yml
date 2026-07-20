@@ -26,6 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Require successful GitHub checks
-        run: gh pr checks "$PR_NUMBER" --required --watch=false
+        run: gh pr checks "$PR_NUMBER" --watch=false
       - name: Squash merge and delete feature branch
         run: gh pr merge "$PR_NUMBER" --squash --delete-branch
