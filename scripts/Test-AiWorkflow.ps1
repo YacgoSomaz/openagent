@@ -63,7 +63,7 @@ foreach ($workflowName in @('ai-tech-lead.yml', 'ai-developer.yml', 'ai-reviewer
     Assert-Contains $workflowPath 'Configure New API provider' "New API provider setup for $workflowName"
     Assert-Contains $workflowPath 'NEWAPI_API_KEY' "New API secret reference for $workflowName"
     Assert-Contains $workflowPath '@openai/codex@0.144.6' "Pinned Codex CLI for $workflowName"
-    Assert-Contains $workflowPath 'codex-home:' "Runner-level Codex home for $workflowName"
+    Assert-Contains $workflowPath 'CODEX_HOME:' "Runner-level Codex home for $workflowName"
     Assert-NotContains $workflowPath 'openai-api-key:' "OpenAI-only action authentication for $workflowName"
     Assert-NotContains $workflowPath 'openai/codex-action@v1' "OpenAI-only Codex action wrapper for $workflowName"
     Assert-NotContains $workflowPath 'start-deepseek-responses-adapter' "Removed DeepSeek adapter for $workflowName"

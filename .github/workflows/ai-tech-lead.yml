@@ -30,15 +30,16 @@ jobs:
         run: |
           mkdir -p "$CODEX_HOME"
           cp .github/codex/newapi-config.toml "$CODEX_HOME/config.toml"
+      - name: Install Codex CLI
+        run: npm install --global @openai/codex@0.144.6
       - name: Plan and dispatch scoped work
-        uses: openai/codex-action@v1
         env:
+          CODEX_HOME: ${{ runner.temp }}/codex-home
           NEWAPI_API_KEY: ${{ secrets.NEWAPI_API_KEY }}
-        with:
-          codex-home: ${{ runner.temp }}/codex-home
-          prompt-file: .github/codex/prompts/tech-lead.md
-          output-file: tech-lead-summary.md
-          sandbox: workspace-write
+        run: |
+          codex exec --skip-git-repo-check --sandbox workspace-write \
+            --output-last-message tech-lead-summary.md \
+            "$(cat .github/codex/prompts/tech-lead.md)"
       - name: Publish planning summary
         run: |
           gh issue comment "$ISSUE_NUMBER" --body-file tech-lead-summary.md

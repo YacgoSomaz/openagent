@@ -29,16 +29,16 @@ jobs:
         run: |
           mkdir -p "$CODEX_HOME"
           cp .github/codex/newapi-config.toml "$CODEX_HOME/config.toml"
+      - name: Install Codex CLI
+        run: npm install --global @openai/codex@0.144.6
       - name: Review the pull request
-        id: codex
-        uses: openai/codex-action@v1
         env:
+          CODEX_HOME: ${{ runner.temp }}/codex-home
           NEWAPI_API_KEY: ${{ secrets.NEWAPI_API_KEY }}
-        with:
-          codex-home: ${{ runner.temp }}/codex-home
-          prompt-file: .github/codex/prompts/reviewer.md
-          output-file: reviewer-summary.md
-          sandbox: read-only
+        run: |
+          codex exec --skip-git-repo-check --sandbox read-only \
+            --output-last-message reviewer-summary.md \
+            "$(cat .github/codex/prompts/reviewer.md)"
       - name: Publish review summary
         run: |
           gh pr comment "$PR_NUMBER" --body-file reviewer-summary.md

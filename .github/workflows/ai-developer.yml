@@ -32,15 +32,16 @@ jobs:
         run: |
           mkdir -p "$CODEX_HOME"
           cp .github/codex/newapi-config.toml "$CODEX_HOME/config.toml"
+      - name: Install Codex CLI
+        run: npm install --global @openai/codex@0.144.6
       - name: Implement and test
-        uses: openai/codex-action@v1
         env:
+          CODEX_HOME: ${{ runner.temp }}/codex-home
           NEWAPI_API_KEY: ${{ secrets.NEWAPI_API_KEY }}
-        with:
-          codex-home: ${{ runner.temp }}/codex-home
-          prompt-file: .github/codex/prompts/developer.md
-          output-file: developer-summary.md
-          sandbox: workspace-write
+        run: |
+          codex exec --skip-git-repo-check --sandbox workspace-write \
+            --output-last-message developer-summary.md \
+            "$(cat .github/codex/prompts/developer.md)"
       - name: Open pull request
         id: create_pr
         uses: peter-evans/create-pull-request@v7
