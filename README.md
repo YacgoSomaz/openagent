@@ -18,12 +18,20 @@ foundation model or code editor.
 
 ## Target workflow
 
-```text
-Feature request
-  -> Tech Lead creates a plan and linked Issues
-  -> Developer AI creates feature/<issue>-<name> and opens a PR
-  -> CI and Reviewer AI validate the change
-  -> Tech Lead merges eligible PRs and closes the linked Issue
+```mermaid
+flowchart LR
+  Request["Feature request / parent Issue"] --> Lead["Tech Lead AI"]
+  Lead --> Tasks["Linked child Issues"]
+  Tasks --> Dev["Developer AI"]
+  Dev --> PR["feature/&lt;issue&gt;-&lt;name&gt; branch + PR"]
+  PR --> CI["CI and contract checks"]
+  PR --> Review["Reviewer AI"]
+  CI --> Gate{"All merge gates pass?"}
+  Review --> Gate
+  Gate -- "No" --> Repair["PR feedback / needs-human"]
+  Repair --> Dev
+  Gate -- "Yes" --> Merge["Tech Lead merge gate"]
+  Merge --> Done["Close linked Issue and delete branch"]
 ```
 
 All agent-to-agent handoffs are represented in GitHub through Issues, labels,
@@ -62,14 +70,29 @@ The first version will use:
   push branches, comment on PRs, and merge only approved changes.
 - Repository guidance in `AGENTS.md`, plus issue and pull-request templates.
 
+## Bootstrap prerequisites
+
+The checked-in workflows deliberately fail closed: a failing CI check or a
+missing provider credential blocks merge rather than bypassing review.
+
+1. Add `OPENAI_API_KEY` as a GitHub Actions secret before running the Tech
+   Lead, Developer, or Reviewer workflows. `openai/codex-action@v1` uses the
+   OpenAI/Codex service and does not accept another provider's API key as a
+   drop-in replacement.
+2. Never commit API keys, paste them into Issues or pull requests, or store
+   them in repository variables. Rotate any key that was accidentally exposed.
+3. If a different model provider is required, implement it as a separate
+   provider adapter with its own narrowly scoped secret and validation tests.
+   Do not weaken the existing Codex review gate to accommodate it.
+
 ## Roadmap
 
-- [ ] Add repository guidance and contribution conventions.
-- [ ] Add Issue and pull-request templates plus a label-based state machine.
-- [ ] Implement a Tech Lead workflow that turns a feature Issue into linked,
+- [x] Add repository guidance and contribution conventions.
+- [x] Add Issue and pull-request templates plus a label-based state machine.
+- [x] Implement a Tech Lead workflow that turns a feature Issue into linked,
       scoped tasks.
-- [ ] Implement a Developer workflow that creates a branch and draft PR.
-- [ ] Implement a read-only Reviewer workflow for PR feedback.
+- [x] Implement a Developer workflow that creates a branch and PR.
+- [x] Implement a read-only Reviewer workflow for PR feedback.
 - [ ] Add CI-failure triage with a bounded automatic repair loop.
 - [ ] Define branch protection and conservative auto-merge rules.
 
