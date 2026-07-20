@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   implement:
-    if: github.actor == github.repository_owner
+    if: github.actor == github.repository_owner || github.actor == 'github-actions[bot]'
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
