@@ -83,6 +83,7 @@ Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') '--delete-branch' 'Feat
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'closingIssuesReferences' 'Merge Gate linked-Issue lookup'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'gh issue close' 'Merge Gate linked-Issue closure'
 Assert-Contains (Join-Path $RepositoryRoot 'AGENTS.md') 'Test-AiWorkflow.ps1' 'Workflow verification command'
+Assert-Contains (Join-Path $RepositoryRoot 'README.md') 'MAINTAINER-RUNBOOK\.md' 'Maintainer runbook link from README'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/prompts/tech-lead.md') 'untrusted data' 'Prompt-injection boundary'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/prompts/tech-lead.md') '--ref "\$GITHUB_REF_NAME"' 'Developer dispatch on the current workflow branch'
 
