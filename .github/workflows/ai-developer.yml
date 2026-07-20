@@ -39,7 +39,7 @@ jobs:
           CODEX_HOME: ${{ runner.temp }}/codex-home
           NEWAPI_API_KEY: ${{ secrets.NEWAPI_API_KEY }}
         run: |
-          codex exec --skip-git-repo-check --sandbox workspace-write \
+          codex exec --skip-git-repo-check --sandbox danger-full-access \
             --output-last-message developer-summary.md \
             "$(cat .github/codex/prompts/developer.md)"
       - name: Open pull request

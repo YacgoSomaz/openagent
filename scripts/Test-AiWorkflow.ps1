@@ -54,7 +54,9 @@ foreach ($relativePath in $requiredFiles) {
 
 $workflowRoot = Join-Path $RepositoryRoot '.github/workflows'
 Assert-Contains (Join-Path $workflowRoot 'ai-tech-lead.yml') 'codex exec' 'Tech Lead Codex CLI invocation'
+Assert-Contains (Join-Path $workflowRoot 'ai-tech-lead.yml') '--sandbox read-only' 'Tech Lead read-only runner sandbox'
 Assert-Contains (Join-Path $workflowRoot 'ai-developer.yml') 'codex exec' 'Developer Codex CLI invocation'
+Assert-Contains (Join-Path $workflowRoot 'ai-developer.yml') '--sandbox danger-full-access' 'Developer hosted-runner write access'
 Assert-Contains (Join-Path $workflowRoot 'ai-developer.yml') 'feature/issue-' 'Developer feature-branch convention'
 Assert-Contains (Join-Path $workflowRoot 'ai-developer.yml') 'draft: false' 'Automatic Reviewer handoff'
 Assert-Contains (Join-Path $workflowRoot 'ai-reviewer.yml') 'codex exec' 'Reviewer Codex CLI invocation'
