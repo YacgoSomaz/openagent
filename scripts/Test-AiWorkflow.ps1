@@ -58,6 +58,7 @@ Assert-Contains (Join-Path $workflowRoot 'ai-developer.yml') 'codex exec' 'Devel
 Assert-Contains (Join-Path $workflowRoot 'ai-developer.yml') 'feature/issue-' 'Developer feature-branch convention'
 Assert-Contains (Join-Path $workflowRoot 'ai-developer.yml') 'draft: false' 'Automatic Reviewer handoff'
 Assert-Contains (Join-Path $workflowRoot 'ai-reviewer.yml') 'codex exec' 'Reviewer Codex CLI invocation'
+Assert-Contains (Join-Path $workflowRoot 'ai-reviewer.yml') 'gh label create "ai:reviewed"' 'Reviewer label bootstrap'
 foreach ($workflowName in @('ai-tech-lead.yml', 'ai-developer.yml', 'ai-reviewer.yml')) {
     $workflowPath = Join-Path $workflowRoot $workflowName
     Assert-Contains $workflowPath 'Configure New API provider' "New API provider setup for $workflowName"

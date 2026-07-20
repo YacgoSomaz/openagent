@@ -41,5 +41,6 @@ jobs:
             "$(cat .github/codex/prompts/reviewer.md)"
       - name: Publish review summary
         run: |
+          gh label create "ai:reviewed" --color "FBCA04" --description "Reviewer AI has completed its review" --force
           gh pr comment "$PR_NUMBER" --body-file reviewer-summary.md
           gh pr edit "$PR_NUMBER" --add-label "ai:reviewed"
