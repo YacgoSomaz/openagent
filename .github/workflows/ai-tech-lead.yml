@@ -37,7 +37,7 @@ jobs:
           CODEX_HOME: ${{ runner.temp }}/codex-home
           NEWAPI_API_KEY: ${{ secrets.NEWAPI_API_KEY }}
         run: |
-          codex exec --skip-git-repo-check --sandbox read-only \
+          codex exec --skip-git-repo-check --sandbox danger-full-access \
             --output-last-message tech-lead-summary.md \
             "$(cat .github/codex/prompts/tech-lead.md)"
       - name: Publish planning summary
