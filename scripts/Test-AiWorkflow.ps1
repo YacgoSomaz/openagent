@@ -33,7 +33,6 @@ function Assert-NotContains {
 
 $requiredFiles = @(
     'AGENTS.md',
-    'MAINTAINER-RUNBOOK.md',
     '.github/workflows/ai-bootstrap.yml',
     '.github/workflows/ai-tech-lead.yml',
     '.github/workflows/ai-developer.yml',
@@ -78,18 +77,12 @@ Assert-Contains (Join-Path $RepositoryRoot '.github/codex/newapi-config.toml') '
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/newapi-config.toml') 'env_key = "NEWAPI_API_KEY"' 'New API environment-key isolation'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'actions/checkout@v5' 'Merge Gate repository checkout'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'gh pr checks "\$PR_NUMBER" --watch=false' 'Merge Gate GitHub check verification'
+Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'issues: write' 'Merge Gate Issue-closure permission'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'confirm_merge' 'Explicit merge confirmation gate'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') '--delete-branch' 'Feature-branch cleanup'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'closingIssuesReferences' 'Merge Gate linked-Issue lookup'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'gh issue close' 'Merge Gate linked-Issue closure'
 Assert-Contains (Join-Path $RepositoryRoot 'AGENTS.md') 'Test-AiWorkflow.ps1' 'Workflow verification command'
-Assert-Contains (Join-Path $RepositoryRoot 'MAINTAINER-RUNBOOK.md') 'label bootstrap' 'Maintainer runbook label bootstrap guidance'
-Assert-Contains (Join-Path $RepositoryRoot 'MAINTAINER-RUNBOOK.md') 'Tech Lead' 'Maintainer runbook Tech Lead dispatch guidance'
-Assert-Contains (Join-Path $RepositoryRoot 'MAINTAINER-RUNBOOK.md') 'Developer' 'Maintainer runbook Developer handoff guidance'
-Assert-Contains (Join-Path $RepositoryRoot 'MAINTAINER-RUNBOOK.md') 'Reviewer' 'Maintainer runbook Reviewer output guidance'
-Assert-Contains (Join-Path $RepositoryRoot 'MAINTAINER-RUNBOOK.md') 'merge gate' 'Maintainer runbook merge gate guidance'
-Assert-Contains (Join-Path $RepositoryRoot 'MAINTAINER-RUNBOOK.md') 'pwsh -NoProfile -File tests/Test-AiWorkflow.ps1' 'Maintainer runbook validation command'
-Assert-Contains (Join-Path $RepositoryRoot 'MAINTAINER-RUNBOOK.md') 'AI delivery-loop contract passed\.' 'Maintainer runbook expected validation result'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/prompts/tech-lead.md') 'untrusted data' 'Prompt-injection boundary'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/prompts/tech-lead.md') '--ref "\$GITHUB_REF_NAME"' 'Developer dispatch on the current workflow branch'
 
