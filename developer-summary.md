@@ -1,11 +1,9 @@
-Implemented a contributor-facing local validation note in [README.md](/home/runner/work/openagent/openagent/README.md) with the exact command `pwsh -NoProfile -File tests/Test-AiWorkflow.ps1` and the expected success output `AI delivery-loop contract passed.`. I also tightened the existing contract validator in [scripts/Test-AiWorkflow.ps1](/home/runner/work/openagent/openagent/scripts/Test-AiWorkflow.ps1) so the documentation requirement is enforced by test.
+Implemented behavior: added a new maintainer-focused runbook in [MAINTAINER-RUNBOOK.md](/home/runner/work/openagent/openagent/MAINTAINER-RUNBOOK.md) covering label bootstrap, Tech Lead dispatch, Developer handoff, Reviewer output, the explicit merge gate, and the required local validation command with its expected success output. I also updated [scripts/Test-AiWorkflow.ps1](/home/runner/work/openagent/openagent/scripts/Test-AiWorkflow.ps1) so the repository contract now enforces the presence and required content of that runbook.
 
-Files changed: [README.md](/home/runner/work/openagent/openagent/README.md), [scripts/Test-AiWorkflow.ps1](/home/runner/work/openagent/openagent/scripts/Test-AiWorkflow.ps1)
+Files changed: [MAINTAINER-RUNBOOK.md](/home/runner/work/openagent/openagent/MAINTAINER-RUNBOOK.md), [scripts/Test-AiWorkflow.ps1](/home/runner/work/openagent/openagent/scripts/Test-AiWorkflow.ps1)
 
-Checks run:
+Checks run with results:
 - `pwsh -NoProfile -File tests/Test-AiWorkflow.ps1` -> passed
-- Result: `AI delivery-loop contract passed.`
+- Output: `AI delivery-loop contract passed.`
 
-Remaining risks / `needs-human` conditions:
-- No `needs-human` condition identified.
-- Residual risk is limited to future documentation drift if the validation command or success text changes without updating the README and contract test together.
+Remaining risks or `needs-human` conditions: no `needs-human` condition identified. Residual risk is limited to future documentation drift if workflow behavior changes without updating the runbook and the contract test together.
