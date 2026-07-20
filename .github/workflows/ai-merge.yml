@@ -29,3 +29,7 @@ jobs:
         run: gh pr checks "$PR_NUMBER" --watch=false
       - name: Squash merge and delete feature branch
         run: gh pr merge "$PR_NUMBER" --squash --delete-branch
+      - name: Close linked Issues
+        run: |
+          gh pr view "$PR_NUMBER" --json closingIssuesReferences --jq '.closingIssuesReferences[].number' |
+            xargs -r -n1 gh issue close
