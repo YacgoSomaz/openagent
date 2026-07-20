@@ -39,8 +39,7 @@ $requiredFiles = @(
     '.github/workflows/ai-reviewer.yml',
     '.github/workflows/ai-merge.yml',
     '.github/workflows/ai-workflow-validation.yml',
-    '.github/codex/deepseek-config.toml',
-    '.github/actions/start-deepseek-responses-adapter/action.yml',
+    '.github/codex/newapi-config.toml',
     '.github/codex/prompts/tech-lead.md',
     '.github/codex/prompts/developer.md',
     '.github/codex/prompts/reviewer.md'
@@ -61,16 +60,15 @@ Assert-Contains (Join-Path $workflowRoot 'ai-developer.yml') 'draft: false' 'Aut
 Assert-Contains (Join-Path $workflowRoot 'ai-reviewer.yml') 'openai/codex-action@v1' 'Reviewer Codex action'
 foreach ($workflowName in @('ai-tech-lead.yml', 'ai-developer.yml', 'ai-reviewer.yml')) {
     $workflowPath = Join-Path $workflowRoot $workflowName
-    Assert-Contains $workflowPath 'Configure DeepSeek provider' "DeepSeek provider setup for $workflowName"
-    Assert-Contains $workflowPath 'start-deepseek-responses-adapter' "DeepSeek Responses adapter for $workflowName"
+    Assert-Contains $workflowPath 'Configure New API provider' "New API provider setup for $workflowName"
+    Assert-Contains $workflowPath 'NEWAPI_API_KEY' "New API secret reference for $workflowName"
     Assert-Contains $workflowPath 'codex-home:' "Runner-level Codex home for $workflowName"
     Assert-NotContains $workflowPath 'openai-api-key:' "OpenAI-only action authentication for $workflowName"
+    Assert-NotContains $workflowPath 'start-deepseek-responses-adapter' "Removed DeepSeek adapter for $workflowName"
 }
-Assert-Contains (Join-Path $RepositoryRoot '.github/codex/deepseek-config.toml') 'model_provider = "litellm"' 'LiteLLM provider selection'
-Assert-Contains (Join-Path $RepositoryRoot '.github/codex/deepseek-config.toml') 'wire_api = "responses"' 'Responses API protocol'
-Assert-NotContains (Join-Path $RepositoryRoot '.github/codex/deepseek-config.toml') 'wire_api = "chat"' 'Removed Chat Completions protocol'
-Assert-Contains (Join-Path $RepositoryRoot '.github/actions/start-deepseek-responses-adapter/action.yml') 'DEEPSEEK_API_KEY' 'DeepSeek secret isolation'
-Assert-Contains (Join-Path $RepositoryRoot '.github/actions/start-deepseek-responses-adapter/action.yml') 'litellm\[proxy\]==1\.93\.0' 'Pinned LiteLLM adapter'
+Assert-Contains (Join-Path $RepositoryRoot '.github/codex/newapi-config.toml') 'model_provider = "newapi"' 'New API provider selection'
+Assert-Contains (Join-Path $RepositoryRoot '.github/codex/newapi-config.toml') 'wire_api = "responses"' 'Responses API protocol'
+Assert-Contains (Join-Path $RepositoryRoot '.github/codex/newapi-config.toml') 'env_key = "NEWAPI_API_KEY"' 'New API environment-key isolation'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'confirm_merge' 'Explicit merge confirmation gate'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') '--delete-branch' 'Feature-branch cleanup'
 Assert-Contains (Join-Path $RepositoryRoot 'AGENTS.md') 'Test-AiWorkflow.ps1' 'Workflow verification command'
