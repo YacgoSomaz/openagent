@@ -13,7 +13,7 @@ repository settings.
 For each child Issue created, dispatch `AI Developer` with:
 
 ```bash
-gh workflow run "AI Developer" --ref main -f issue_number=<child issue number>
+gh workflow run "AI Developer" --ref "$GITHUB_REF_NAME" -f issue_number=<child issue number>
 ```
 
 Finish with a Markdown summary listing the parent Issue, every child Issue,
