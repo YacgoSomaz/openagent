@@ -1,0 +1,46 @@
+name: AI Tech Lead
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Trusted feature Issue number to plan
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  plan:
+    if: github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE_NUMBER: ${{ inputs.issue_number }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Capture feature Issue as data
+        run: gh issue view "$ISSUE_NUMBER" --json number,title,body,labels,url > issue.json
+      - name: Configure New API provider
+        env:
+          CODEX_HOME: ${{ runner.temp }}/codex-home
+        run: |
+          mkdir -p "$CODEX_HOME"
+          cp .github/codex/newapi-config.toml "$CODEX_HOME/config.toml"
+      - name: Install Codex CLI
+        run: npm install --global @openai/codex@0.144.6
+      - name: Plan and dispatch scoped work
+        env:
+          CODEX_HOME: ${{ runner.temp }}/codex-home
+          NEWAPI_API_KEY: ${{ secrets.NEWAPI_API_KEY }}
+        run: |
+          codex exec --skip-git-repo-check --sandbox workspace-write \
+            --output-last-message tech-lead-summary.md \
+            "$(cat .github/codex/prompts/tech-lead.md)"
+      - name: Publish planning summary
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body-file tech-lead-summary.md
+          gh issue edit "$ISSUE_NUMBER" --add-label "ai:planned"

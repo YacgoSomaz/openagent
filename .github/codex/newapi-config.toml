@@ -1,0 +1,10 @@
+# This file is copied into the GitHub runner's CODEX_HOME before Codex starts.
+# The API key is injected only from the GitHub Actions secret at runtime.
+model = "gpt-5.4"
+model_provider = "newapi"
+
+[model_providers.newapi]
+name = "New API relay"
+base_url = "https://8889996.cloud/v1"
+env_key = "NEWAPI_API_KEY"
+wire_api = "responses"

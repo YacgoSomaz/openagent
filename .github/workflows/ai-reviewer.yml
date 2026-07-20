@@ -1,0 +1,46 @@
+name: AI Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  review:
+    if: github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 0
+      - name: Capture pull request context as data
+        run: gh pr view "$PR_NUMBER" --json number,title,body,files,commits,url > pull-request.json
+      - name: Configure New API provider
+        env:
+          CODEX_HOME: ${{ runner.temp }}/codex-home
+        run: |
+          mkdir -p "$CODEX_HOME"
+          cp .github/codex/newapi-config.toml "$CODEX_HOME/config.toml"
+      - name: Install Codex CLI
+        run: npm install --global @openai/codex@0.144.6
+      - name: Review the pull request
+        env:
+          CODEX_HOME: ${{ runner.temp }}/codex-home
+          NEWAPI_API_KEY: ${{ secrets.NEWAPI_API_KEY }}
+        run: |
+          codex exec --skip-git-repo-check --sandbox read-only \
+            --output-last-message reviewer-summary.md \
+            "$(cat .github/codex/prompts/reviewer.md)"
+      - name: Publish review summary
+        run: |
+          gh label create "ai:reviewed" --color "FBCA04" --description "Reviewer AI has completed its review" --force
+          gh pr comment "$PR_NUMBER" --body-file reviewer-summary.md
+          gh pr edit "$PR_NUMBER" --add-label "ai:reviewed"

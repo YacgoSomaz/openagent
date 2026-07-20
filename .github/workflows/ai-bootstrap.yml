@@ -1,0 +1,32 @@
+name: Bootstrap OpenAgent labels
+
+on:
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or update delivery-loop labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = [
+              ['ai:ready', '0E8A16', 'Feature is ready for Tech Lead planning'],
+              ['ai:planned', '1D76DB', 'Tech Lead plan has been published'],
+              ['ai:implement', '5319E7', 'Developer AI may implement this Issue'],
+              ['ai:reviewed', 'FBCA04', 'Reviewer AI has completed its review'],
+              ['needs-human', 'B60205', 'Human decision or intervention is required']
+            ];
+            for (const [name, color, description] of labels) {
+              try {
+                await github.rest.issues.getLabel({ ...context.repo, name });
+                await github.rest.issues.updateLabel({ ...context.repo, name, color, description });
+              } catch (error) {
+                if (error.status !== 404) throw error;
+                await github.rest.issues.createLabel({ ...context.repo, name, color, description });
+              }
+            }
