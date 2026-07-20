@@ -1,0 +1,37 @@
+name: AI Tech Lead
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Trusted feature Issue number to plan
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  plan:
+    if: github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE_NUMBER: ${{ inputs.issue_number }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Capture feature Issue as data
+        run: gh issue view "$ISSUE_NUMBER" --json number,title,body,labels,url > issue.json
+      - name: Plan and dispatch scoped work
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/codex/prompts/tech-lead.md
+          output-file: tech-lead-summary.md
+          sandbox: workspace-write
+      - name: Publish planning summary
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body-file tech-lead-summary.md
+          gh issue edit "$ISSUE_NUMBER" --add-label "ai:planned"

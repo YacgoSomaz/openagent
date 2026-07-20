@@ -1,0 +1,37 @@
+name: AI Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  review:
+    if: github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 0
+      - name: Capture pull request context as data
+        run: gh pr view "$PR_NUMBER" --json number,title,body,files,commits,url > pull-request.json
+      - name: Review the pull request
+        id: codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/codex/prompts/reviewer.md
+          output-file: reviewer-summary.md
+          sandbox: read-only
+      - name: Publish review summary
+        run: |
+          gh pr comment "$PR_NUMBER" --body-file reviewer-summary.md
+          gh pr edit "$PR_NUMBER" --add-label "ai:reviewed"

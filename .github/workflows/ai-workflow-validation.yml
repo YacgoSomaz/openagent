@@ -1,0 +1,28 @@
+name: Validate AI delivery loop
+
+on:
+  pull_request:
+    paths:
+      - '.github/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'AGENTS.md'
+  push:
+    branches: [main]
+    paths:
+      - '.github/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'AGENTS.md'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Verify workflow contract
+        shell: pwsh
+        run: pwsh -NoProfile -File tests/Test-AiWorkflow.ps1
