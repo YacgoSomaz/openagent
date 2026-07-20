@@ -26,14 +26,24 @@ jobs:
           fetch-depth: 0
       - name: Capture implementation Issue as data
         run: gh issue view "$ISSUE_NUMBER" --json number,title,body,labels,url > issue.json
+      - name: Configure DeepSeek provider
+        env:
+          CODEX_HOME: ${{ runner.temp }}/codex-home
+        run: |
+          mkdir -p "$CODEX_HOME"
+          cp .github/codex/deepseek-config.toml "$CODEX_HOME/config.toml"
+      - name: Start DeepSeek Responses adapter
+        uses: ./.github/actions/start-deepseek-responses-adapter
+        with:
+          deepseek-api-key: ${{ secrets.DEEPSEEK_API_KEY }}
       - name: Implement and test
         uses: openai/codex-action@v1
         with:
-          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          codex-home: ${{ runner.temp }}/codex-home
           prompt-file: .github/codex/prompts/developer.md
           output-file: developer-summary.md
           sandbox: workspace-write
-      - name: Open draft pull request
+      - name: Open pull request
         id: create_pr
         uses: peter-evans/create-pull-request@v7
         with:
@@ -50,4 +60,4 @@ jobs:
       - name: Report pull request to the Issue
         if: steps.create_pr.outputs.pull-request-number != ''
         run: |
-          gh issue comment "$ISSUE_NUMBER" --body "Developer created draft PR #${{ steps.create_pr.outputs.pull-request-number }}."
+          gh issue comment "$ISSUE_NUMBER" --body "Developer created PR #${{ steps.create_pr.outputs.pull-request-number }}."

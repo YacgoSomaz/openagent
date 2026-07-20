@@ -75,15 +75,16 @@ The first version will use:
 The checked-in workflows deliberately fail closed: a failing CI check or a
 missing provider credential blocks merge rather than bypassing review.
 
-1. Add `OPENAI_API_KEY` as a GitHub Actions secret before running the Tech
-   Lead, Developer, or Reviewer workflows. `openai/codex-action@v1` uses the
-   OpenAI/Codex service and does not accept another provider's API key as a
-   drop-in replacement.
+1. Add `DEEPSEEK_API_KEY` as a GitHub Actions secret before running the Tech
+   Lead, Developer, or Reviewer workflows. Current Codex releases use the
+   Responses API and no longer accept the Chat Completions wire format directly.
+   The checked-in workflow runs a pinned, loopback-only LiteLLM adapter to
+   translate Codex Responses requests to DeepSeek's compatible Chat API.
 2. Never commit API keys, paste them into Issues or pull requests, or store
    them in repository variables. Rotate any key that was accidentally exposed.
-3. If a different model provider is required, implement it as a separate
-   provider adapter with its own narrowly scoped secret and validation tests.
-   Do not weaken the existing Codex review gate to accommodate it.
+3. A provider adapter is an explicit dependency boundary: pin its version,
+   scope its secret to the adapter step, and retain validation tests. Do not
+   weaken the existing Codex review gate to accommodate it.
 
 ## Roadmap
 

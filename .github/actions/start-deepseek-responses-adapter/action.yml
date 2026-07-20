@@ -1,0 +1,36 @@
+name: Start DeepSeek Responses adapter
+description: Run a local, pinned LiteLLM proxy that translates Codex Responses API requests to DeepSeek.
+
+inputs:
+  deepseek-api-key:
+    description: DeepSeek API key from a GitHub Actions secret
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install and start the local adapter
+      shell: bash
+      env:
+        DEEPSEEK_API_KEY: ${{ inputs.deepseek-api-key }}
+        LITELLM_LOG: ERROR
+      run: |
+        set -euo pipefail
+        python -m pip install --disable-pip-version-check "litellm[proxy]==1.93.0"
+        cat > "$RUNNER_TEMP/litellm-config.yaml" <<'YAML'
+        model_list:
+          - model_name: deepseek-codex
+            litellm_params:
+              model: deepseek/deepseek-v4-flash
+              api_key: os.environ/DEEPSEEK_API_KEY
+        YAML
+        litellm --config "$RUNNER_TEMP/litellm-config.yaml" --port 4000 > "$RUNNER_TEMP/litellm.log" 2>&1 &
+        echo $! > "$RUNNER_TEMP/litellm.pid"
+        for attempt in {1..20}; do
+          if curl --fail --silent http://127.0.0.1:4000/health/readiness; then
+            exit 0
+          fi
+          sleep 1
+        done
+        cat "$RUNNER_TEMP/litellm.log" >&2
+        exit 1
