@@ -78,6 +78,8 @@ Assert-Contains (Join-Path $RepositoryRoot '.github/codex/newapi-config.toml') '
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'confirm_merge' 'Explicit merge confirmation gate'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') '--delete-branch' 'Feature-branch cleanup'
 Assert-Contains (Join-Path $RepositoryRoot 'AGENTS.md') 'Test-AiWorkflow.ps1' 'Workflow verification command'
+Assert-Contains (Join-Path $RepositoryRoot 'README.md') 'pwsh -NoProfile -File tests/Test-AiWorkflow\.ps1' 'Contributor-facing local validation command'
+Assert-Contains (Join-Path $RepositoryRoot 'README.md') 'AI delivery-loop contract passed\.' 'Contributor-facing validation success output'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/prompts/tech-lead.md') 'untrusted data' 'Prompt-injection boundary'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/prompts/tech-lead.md') '--ref "\$GITHUB_REF_NAME"' 'Developer dispatch on the current workflow branch'
 
