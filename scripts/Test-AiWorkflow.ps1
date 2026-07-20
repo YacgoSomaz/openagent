@@ -75,6 +75,7 @@ foreach ($workflowName in @('ai-tech-lead.yml', 'ai-developer.yml', 'ai-reviewer
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/newapi-config.toml') 'model_provider = "newapi"' 'New API provider selection'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/newapi-config.toml') 'wire_api = "responses"' 'Responses API protocol'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/newapi-config.toml') 'env_key = "NEWAPI_API_KEY"' 'New API environment-key isolation'
+Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'actions/checkout@v5' 'Merge Gate repository checkout'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') 'confirm_merge' 'Explicit merge confirmation gate'
 Assert-Contains (Join-Path $workflowRoot 'ai-merge.yml') '--delete-branch' 'Feature-branch cleanup'
 Assert-Contains (Join-Path $RepositoryRoot 'AGENTS.md') 'Test-AiWorkflow.ps1' 'Workflow verification command'

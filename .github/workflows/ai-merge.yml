@@ -24,6 +24,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ inputs.pr_number }}
     steps:
+      - uses: actions/checkout@v5
       - name: Require successful GitHub checks
         run: gh pr checks "$PR_NUMBER" --required --watch=false
       - name: Squash merge and delete feature branch
