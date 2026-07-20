@@ -16,6 +16,8 @@ pull requests, and a controlled merge decision.
 OpenAgent focuses on that orchestration layer rather than trying to build a new
 foundation model or code editor.
 
+Maintainer operating guidance lives in [MAINTAINER-RUNBOOK.md](MAINTAINER-RUNBOOK.md).
+
 ## Target workflow
 
 ```mermaid
