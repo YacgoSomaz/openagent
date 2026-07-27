@@ -72,6 +72,51 @@ The first version will use:
   push branches, comment on PRs, and merge only approved changes.
 - Repository guidance in `AGENTS.md`, plus issue and pull-request templates.
 
+## Codex app prototype
+
+The repository now includes the installable `$openagent-director` skill. It
+turns the current Codex task into a technical director that builds a dependency
+graph and launches direct subagents in parallel execution waves.
+
+```mermaid
+flowchart TB
+  User["Natural-language request"] --> Director["Technical Director"]
+  Director --> Contract["Wave 1: contracts and boundaries"]
+  Contract --> Backend1["Wave 2: backend worker A"]
+  Contract --> Backend2["Wave 2: backend worker B"]
+  Contract --> Frontend1["Wave 2: frontend worker A"]
+  Contract --> Frontend2["Wave 2: frontend worker B"]
+  Backend1 --> Review["Wave 3: parallel review and verification"]
+  Backend2 --> Review
+  Frontend1 --> Review
+  Frontend2 --> Review
+  Review --> Integrate["Wave 4: director integration gate"]
+  Integrate --> Director
+```
+
+The agent hierarchy remains two levels deep. Dependency waves determine when a
+worker may start, so direct workers do not have to be peers in execution time.
+
+When this repository is open in Codex, the repo-scoped skill and custom agents
+are discovered automatically. To install them for every repository on Windows,
+run:
+
+```powershell
+pwsh -NoProfile -File scripts/Install-OpenAgent.ps1
+```
+
+Restart Codex and invoke it explicitly for the first test:
+
+```text
+$openagent-director Add a small feature to this repository. Partition safe work
+across parallel workers, wait for dependency waves, review the result, and run
+the available verification.
+```
+
+Use `-WhatIf` to preview personal installation or `-Force` to update an existing
+installation. The MVP keeps orchestration inside the active Codex task; durable
+GitHub event state and cross-session recovery remain future MCP-service work.
+
 ## Bootstrap prerequisites
 
 The checked-in workflows deliberately fail closed: a failing CI check or a
@@ -110,6 +155,10 @@ AI delivery-loop contract passed.
 - [x] Implement a read-only Reviewer workflow for PR feedback.
 - [ ] Add CI-failure triage with a bounded automatic repair loop.
 - [ ] Define branch protection and conservative auto-merge rules.
+- [x] Add a Codex-native technical-director skill with dependency-aware parallel
+      subagents.
+- [ ] Add an MCP orchestration service for durable runs, worktree leases, and
+      GitHub webhooks.
 
 ## Status
 

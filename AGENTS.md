@@ -33,3 +33,18 @@ pwsh -NoProfile -File tests/Test-AiWorkflow.ps1
 - **Reviewer** comments on PR correctness and test gaps without changing code.
 - **Merge** is deliberately manually dispatched in this bootstrap version.
   It checks CI and deletes the feature branch after merge.
+
+## Parallel local execution
+
+When the user invokes `$openagent-director` or explicitly requests a parallel AI
+development team, use `.agents/skills/openagent-director/SKILL.md`.
+
+- Keep one technical director in the root task and make every worker a direct
+  child; do not allow workers to delegate.
+- Model ordering with dependency waves rather than nested agent management.
+- Run concurrent writers only in isolated worktrees or strictly disjoint write
+  scopes.
+- Use an independent reviewer or verifier after implementation. The author of a
+  change must not be its sole reviewer.
+- Preserve unrelated user changes and keep GitHub mutations behind the existing
+  authorization and merge gates.

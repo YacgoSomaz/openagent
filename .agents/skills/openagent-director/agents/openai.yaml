@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenAgent Director"
+  short_description: "Plan and run parallel AI development teams"
+  default_prompt: "Use $openagent-director to implement this request with a dependency-aware parallel AI team."

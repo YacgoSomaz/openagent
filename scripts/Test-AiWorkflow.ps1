@@ -42,7 +42,15 @@ $requiredFiles = @(
     '.github/codex/newapi-config.toml',
     '.github/codex/prompts/tech-lead.md',
     '.github/codex/prompts/developer.md',
-    '.github/codex/prompts/reviewer.md'
+    '.github/codex/prompts/reviewer.md',
+    '.agents/skills/openagent-director/SKILL.md',
+    '.agents/skills/openagent-director/agents/openai.yaml',
+    '.agents/skills/openagent-director/references/task-contract.md',
+    '.agents/skills/openagent-director/references/examples.md',
+    '.codex/agents/openagent-implementer.toml',
+    '.codex/agents/openagent-reviewer.toml',
+    '.codex/agents/openagent-verifier.toml',
+    'scripts/Install-OpenAgent.ps1'
 )
 
 foreach ($relativePath in $requiredFiles) {
@@ -86,6 +94,15 @@ Assert-Contains (Join-Path $RepositoryRoot 'AGENTS.md') 'Test-AiWorkflow.ps1' 'W
 Assert-Contains (Join-Path $RepositoryRoot 'README.md') 'MAINTAINER-RUNBOOK\.md' 'Maintainer runbook link from README'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/prompts/tech-lead.md') 'untrusted data' 'Prompt-injection boundary'
 Assert-Contains (Join-Path $RepositoryRoot '.github/codex/prompts/tech-lead.md') '--ref "\$GITHUB_REF_NAME"' 'Developer dispatch on the current workflow branch'
+
+$skillPath = Join-Path $RepositoryRoot '.agents/skills/openagent-director/SKILL.md'
+Assert-Contains $skillPath 'name: openagent-director' 'OpenAgent skill name'
+Assert-Contains $skillPath 'Start all ready tasks in the same wave before waiting' 'Parallel wave dispatch rule'
+Assert-Contains $skillPath 'Do not let an implementation worker approve its own change' 'Independent review gate'
+Assert-Contains $skillPath 'Git worktree' 'Concurrent writer isolation'
+Assert-NotContains $skillPath '\[TODO' 'Unresolved skill template marker'
+Assert-Contains (Join-Path $RepositoryRoot 'scripts/Install-OpenAgent.ps1') 'SupportsShouldProcess' 'Safe installer preview support'
+Assert-Contains (Join-Path $RepositoryRoot 'AGENTS.md') '\$openagent-director' 'Repository skill routing'
 
 Write-Host 'AI delivery-loop contract passed.'
 exit 0
