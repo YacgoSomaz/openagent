@@ -18,6 +18,48 @@ foundation model or code editor.
 
 Maintainer operating guidance lives in [MAINTAINER-RUNBOOK.md](MAINTAINER-RUNBOOK.md).
 
+## Positioning and limits
+
+OpenAgent is currently an **engineering experiment and a reusable way of
+thinking about agent collaboration**, not a finished end-user product. It does
+not yet start from a validated customer problem, provide a complete application
+experience, or prove that a multi-agent team performs better than a simpler
+single-agent workflow.
+
+The repository exists to make several technical questions concrete:
+
+- How should a large request be divided into bounded, reviewable tasks?
+- What state must be persisted outside an agent's transient conversation?
+- How can implementation, review, CI, and merge authority remain separated?
+- When should automation stop and request human judgment?
+- What evidence is required before an AI-produced change is accepted?
+
+The value of this work is therefore primarily **technical and methodological**.
+Its workflow patterns may support a future product with a real user and use
+case, but OpenAgent itself should not be presented as if it has already found
+product-market fit or delivered a production autonomous development team.
+
+### What this repository demonstrates today
+
+- A GitHub-native state model based on Issues, pull requests, labels, comments,
+  and CI results;
+- Explicit Tech Lead, Developer, Reviewer, and merge-gate responsibilities;
+- Least-privilege and fail-closed workflow design;
+- Small-task, test-gated delivery contracts;
+- A foundation for studying bounded repair loops and human escalation.
+
+### What it does not demonstrate yet
+
+- A validated end-user product or concrete business workflow;
+- Reliable autonomous delivery across a representative set of repositories;
+- Measured improvement in completion rate, quality, cost, or delivery time;
+- A production-ready automatic repair and merge loop;
+- A conclusion that multiple agents are always preferable to one capable agent.
+
+Future work should begin with a concrete application and a measurable baseline,
+then use this repository as supporting infrastructure rather than treating agent
+orchestration as the product by default.
+
 ## Target workflow
 
 ```mermaid
